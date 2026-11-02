@@ -1,0 +1,55 @@
+<Window x:Class="Ashstrap.CleanupHelper.HelperWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Ashstrap — Uninstall" Width="720" Height="620" MinWidth="600" MinHeight="460"
+        WindowStartupLocation="CenterScreen"
+        Background="{StaticResource BgBrush}" FontFamily="{StaticResource UiFont}">
+    <ScrollViewer VerticalScrollBarVisibility="Auto">
+        <Grid Margin="32,28,32,28">
+
+            <!-- Progress -->
+            <StackPanel x:Name="ProgressPanel">
+                <TextBlock x:Name="ProgressTitle" Text="Uninstalling…" Style="{StaticResource H1}" Margin="0,0,0,16" />
+                <ProgressBar x:Name="Progress" Style="{StaticResource ModernProgress}" Maximum="1" Margin="0,0,0,10" />
+                <TextBlock x:Name="ProgressText" Style="{StaticResource Muted}" Text="Starting…" />
+                <Border Style="{StaticResource Card}" Margin="0,22,0,0" Padding="12">
+                    <TextBlock x:Name="LogTail" Style="{StaticResource Muted}" FontFamily="Cascadia Mono, Consolas" FontSize="11.5" MinHeight="140" />
+                </Border>
+                <Button x:Name="CancelButton" Content="Cancel" Style="{StaticResource SecondaryButton}" HorizontalAlignment="Right"
+                        Margin="0,18,0,0" Click="Cancel_Click" />
+            </StackPanel>
+
+            <!-- Launcher still open -->
+            <StackPanel x:Name="WaitPanel" Visibility="Collapsed">
+                <TextBlock Text="The launcher is still open" Style="{StaticResource H1}" Margin="0,0,0,10" />
+                <TextBlock Style="{StaticResource Body}"
+                           Text="The uninstaller waits for the launcher to close before removing anything. Close the launcher window, then choose Continue." />
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,22,0,0">
+                    <Button Content="Cancel uninstall" Style="{StaticResource SecondaryButton}" Click="AbortBeforeStart_Click" Margin="0,0,10,0" />
+                    <Button Content="Continue" Style="{StaticResource PrimaryButton}" Click="ContinueWaiting_Click" />
+                </StackPanel>
+            </StackPanel>
+
+            <!-- Result -->
+            <StackPanel x:Name="ResultPanel" Visibility="Collapsed">
+                <ContentControl x:Name="ResultHost" />
+                <TextBlock x:Name="ReportLocation" Style="{StaticResource Muted}" Margin="0,16,0,0" />
+                <WrapPanel HorizontalAlignment="Right" Margin="0,20,0,0">
+                    <Button Content="Open full report" Style="{StaticResource SecondaryButton}" Click="OpenReport_Click" Margin="0,0,10,0" />
+                    <Button x:Name="RetryButton" Content="Try again" Style="{StaticResource SecondaryButton}" Click="Retry_Click" Margin="0,0,10,0" />
+                    <Button Content="Close" Style="{StaticResource PrimaryButton}" Click="Close_Click" />
+                </WrapPanel>
+            </StackPanel>
+
+            <!-- Fatal error -->
+            <StackPanel x:Name="ErrorPanel" Visibility="Collapsed">
+                <TextBlock Text="The uninstaller ran into a problem" Style="{StaticResource H1}" Margin="0,0,0,10" />
+                <TextBlock x:Name="ErrorText" Style="{StaticResource Body}" />
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,22,0,0">
+                    <Button Content="Try again" Style="{StaticResource SecondaryButton}" Click="Retry_Click" Margin="0,0,10,0" />
+                    <Button Content="Close" Style="{StaticResource PrimaryButton}" Click="Close_Click" />
+                </StackPanel>
+            </StackPanel>
+        </Grid>
+    </ScrollViewer>
+</Window>

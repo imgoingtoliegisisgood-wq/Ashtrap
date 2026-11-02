@@ -1,0 +1,23 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <!--
+    The uninstall engine. It targets plain net8.0 (not net8.0-windows) on purpose:
+    all decision-making code (detection, ownership checks, planning, verification)
+    is platform-neutral and covered by the test project, which also runs on Linux CI.
+    Windows-only implementations (registry, Authenticode, COM shortcuts, process
+    image paths) live in Platform/Windows*.cs and are marked [SupportedOSPlatform("windows")].
+  -->
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <LangVersion>latest</LangVersion>
+    <RootNamespace>Ashstrap.Core</RootNamespace>
+    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <InternalsVisibleTo Include="Ashstrap.Core.Tests" />
+  </ItemGroup>
+
+</Project>

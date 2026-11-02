@@ -1,0 +1,178 @@
+<Window x:Class="Ashstrap.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Ashstrap" Width="920" Height="680" MinWidth="760" MinHeight="560"
+        WindowStartupLocation="CenterScreen"
+        Background="{StaticResource BgBrush}" FontFamily="{StaticResource UiFont}">
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="210" />
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+
+        <!-- Navigation -->
+        <Border Background="{StaticResource SurfaceBrush}" BorderBrush="{StaticResource BorderBrush}" BorderThickness="0,0,1,0">
+            <StackPanel Margin="14,20,14,14">
+                <TextBlock Text="Ashstrap" Style="{StaticResource H2}" Margin="12,0,0,2" />
+                <TextBlock x:Name="VersionText" Style="{StaticResource Muted}" Margin="12,0,0,20" />
+                <TextBlock Text="SETTINGS" Style="{StaticResource Muted}" FontSize="11" Margin="12,0,0,6" />
+                <RadioButton x:Name="NavGeneral" Style="{StaticResource NavItem}" IsChecked="True" Click="NavGeneral_Click">
+                    <TextBlock Text="General" />
+                </RadioButton>
+            </StackPanel>
+        </Border>
+
+        <ScrollViewer Grid.Column="1" VerticalScrollBarVisibility="Auto">
+            <Grid Margin="32,26,32,28" MaxWidth="760" HorizontalAlignment="Stretch">
+
+                <!-- ───────────── Settings → General ───────────── -->
+                <StackPanel x:Name="GeneralPanel">
+                    <TextBlock Text="General" Style="{StaticResource H1}" Margin="0,0,0,18" />
+
+                    <Border Style="{StaticResource Card}" Margin="0,0,0,14">
+                        <StackPanel>
+                            <TextBlock Text="Roblox" Style="{StaticResource H2}" Margin="0,0,0,6" />
+                            <TextBlock x:Name="RobloxStatusText" Style="{StaticResource Muted}" Text="Checking…" Margin="0,0,0,14" />
+                            <WrapPanel>
+                                <Button x:Name="LaunchPlayerButton" Content="Launch Roblox Player" Style="{StaticResource PrimaryButton}" Click="LaunchPlayer_Click" Margin="0,0,10,0" />
+                                <Button x:Name="LaunchStudioButton" Content="Open Roblox Studio" Style="{StaticResource SecondaryButton}" Click="LaunchStudio_Click" />
+                            </WrapPanel>
+                        </StackPanel>
+                    </Border>
+
+                    <Border x:Name="InstallCard" Style="{StaticResource Card}" Margin="0,0,0,14" Visibility="Collapsed">
+                        <StackPanel>
+                            <TextBlock Text="Install" Style="{StaticResource H2}" Margin="0,0,0,6" />
+                            <TextBlock Style="{StaticResource Muted}" Margin="0,0,0,14"
+                                       Text="This copy is not installed. Installing puts the launcher in your user profile (no administrator rights needed)." />
+                            <CheckBox x:Name="ChkDesktopShortcut" Style="{StaticResource ModernCheck}" IsChecked="True" Content="Create a desktop shortcut" />
+                            <CheckBox x:Name="ChkHandleLinks" Style="{StaticResource ModernCheck}" IsChecked="True" Content="Open Roblox links (roblox-player://) with this launcher" />
+                            <Button Content="Install" Style="{StaticResource PrimaryButton}" HorizontalAlignment="Left" Margin="0,6,0,0" Click="Install_Click" />
+                        </StackPanel>
+                    </Border>
+
+                    <Border Style="{StaticResource Card}">
+                        <StackPanel>
+                            <TextBlock Text="Uninstall" Style="{StaticResource H2}" Margin="0,0,0,6" />
+                            <TextBlock Style="{StaticResource Muted}" Margin="0,0,0,14"
+                                       Text="Remove the launcher, or the launcher together with Roblox Player and Roblox Studio. This works on its own, without Windows Settings, Apps &amp; Features or Control Panel." />
+                            <Button Content="Uninstall…" Style="{StaticResource SecondaryButton}" HorizontalAlignment="Left" Click="OpenUninstall_Click" />
+                        </StackPanel>
+                    </Border>
+                </StackPanel>
+
+                <!-- ───────────── Uninstall: choose ───────────── -->
+                <StackPanel x:Name="UninstallPanel" Visibility="Collapsed">
+                    <TextBlock Text="Uninstall" Style="{StaticResource H1}" Margin="0,0,0,4" />
+                    <TextBlock Text="Choose what you want to remove." Style="{StaticResource Muted}" Margin="0,0,0,18" />
+
+                    <RadioButton x:Name="OptLauncherOnly" Style="{StaticResource OptionCard}" GroupName="UninstallMode" IsChecked="True" Checked="Option_Changed">
+                        <StackPanel>
+                            <TextBlock Text="Uninstall Launcher Only" Style="{StaticResource H2}" />
+                            <TextBlock Text="Remove the custom launcher while keeping Roblox installed." Style="{StaticResource Muted}" Margin="0,4,0,0" />
+                        </StackPanel>
+                    </RadioButton>
+
+                    <RadioButton x:Name="OptEverything" Style="{StaticResource OptionCard}" GroupName="UninstallMode" Checked="Option_Changed">
+                        <StackPanel>
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock Text="Uninstall Everything" Style="{StaticResource H2}" VerticalAlignment="Center" />
+                                <Border Style="{StaticResource DangerBadge}" Margin="10,0,0,0" VerticalAlignment="Center">
+                                    <TextBlock Text="Complete removal" Foreground="{StaticResource DangerBrush}" FontSize="11.5" FontWeight="SemiBold" />
+                                </Border>
+                            </StackPanel>
+                            <TextBlock Text="Remove the custom launcher, Roblox Player, and Roblox Studio." Style="{StaticResource Muted}" Margin="0,4,0,0" />
+                        </StackPanel>
+                    </RadioButton>
+
+                    <Border Style="{StaticResource Card}" Margin="0,4,0,0">
+                        <StackPanel>
+                            <CheckBox x:Name="ChkCache" Style="{StaticResource ModernCheck}" IsEnabled="False">
+                                <StackPanel>
+                                    <TextBlock Text="Also remove Roblox cache and temporary application data." Style="{StaticResource Body}" />
+                                    <TextBlock Text="Downloads, HTTP cache, logs and crash dumps." Style="{StaticResource Muted}" />
+                                </StackPanel>
+                            </CheckBox>
+                            <CheckBox x:Name="ChkStudioData" Style="{StaticResource ModernCheck}" IsEnabled="False" Margin="0">
+                                <StackPanel>
+                                    <TextBlock Text="Remove Roblox Studio user data and settings." Style="{StaticResource Body}" />
+                                    <TextBlock Style="{StaticResource Muted}"
+                                               Text="Your Studio settings and the plugins in your Plugins folder. Places and AutoSaves in Documents\ROBLOX are never removed." />
+                                </StackPanel>
+                            </CheckBox>
+                            <TextBlock x:Name="OptionsHint" Style="{StaticResource Muted}" Margin="30,8,0,0"
+                                       Text="These options apply to “Uninstall Everything”." />
+                        </StackPanel>
+                    </Border>
+
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,22,0,0">
+                        <Button Content="Cancel" Style="{StaticResource SecondaryButton}" Click="CancelUninstall_Click" Margin="0,0,10,0" />
+                        <Button Content="Continue" Style="{StaticResource PrimaryButton}" Click="Continue_Click" />
+                    </StackPanel>
+                </StackPanel>
+
+                <!-- ───────────── Uninstall: confirm ───────────── -->
+                <StackPanel x:Name="ConfirmPanel" Visibility="Collapsed">
+                    <TextBlock Text="Are you sure?" Style="{StaticResource H1}" Margin="0,0,0,8" />
+                    <TextBlock Text="You are about to uninstall the selected applications and their associated files." Style="{StaticResource Body}" />
+                    <TextBlock Text="This action cannot be automatically undone." Style="{StaticResource Body}" FontWeight="SemiBold" Margin="0,4,0,18" />
+
+                    <Border Style="{StaticResource Card}" Margin="0,0,0,12">
+                        <StackPanel>
+                            <TextBlock Text="Will be removed" Style="{StaticResource H2}" Margin="0,0,0,8" />
+                            <StackPanel x:Name="WillRemoveList" />
+                        </StackPanel>
+                    </Border>
+                    <Border Style="{StaticResource Card}">
+                        <StackPanel>
+                            <TextBlock Text="Will be kept" Style="{StaticResource H2}" Margin="0,0,0,8" />
+                            <StackPanel x:Name="WillKeepList" />
+                        </StackPanel>
+                    </Border>
+
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,22,0,0">
+                        <Button Content="Go Back" Style="{StaticResource SecondaryButton}" Click="GoBack_Click" Margin="0,0,10,0" />
+                        <Button x:Name="ConfirmButton" Content="Confirm Uninstallation" Style="{StaticResource DangerButton}" Click="Confirm_Click" />
+                    </StackPanel>
+                </StackPanel>
+
+                <!-- ───────────── Helper blocked ───────────── -->
+                <StackPanel x:Name="BlockedPanel" Visibility="Collapsed">
+                    <TextBlock Text="The uninstaller could not start" Style="{StaticResource H1}" Margin="0,0,0,8" />
+                    <TextBlock Style="{StaticResource Body}" Margin="0,0,0,12"
+                               Text="Windows did not allow the cleanup helper to run. Nothing has been removed." />
+                    <Border Style="{StaticResource Card}" Margin="0,0,0,12">
+                        <StackPanel>
+                            <TextBlock Text="What Windows reported" Style="{StaticResource H2}" Margin="0,0,0,6" />
+                            <TextBlock x:Name="BlockedReason" Style="{StaticResource Body}" />
+                        </StackPanel>
+                    </Border>
+                    <TextBlock x:Name="BlockedAdvice" Style="{StaticResource Muted}" Margin="0,0,0,8" />
+                    <TextBlock x:Name="FallbackExplain" Style="{StaticResource Muted}"
+                               Text="You can still remove Roblox Player and Roblox Studio now. The launcher itself cannot delete its own files while it is open, so it would stay installed and be reported as remaining." />
+                    <WrapPanel HorizontalAlignment="Right" Margin="0,22,0,0">
+                        <Button Content="Back" Style="{StaticResource SecondaryButton}" Click="GoBack_Click" Margin="0,0,10,0" />
+                        <Button Content="Try again" Style="{StaticResource SecondaryButton}" Click="Confirm_Click" Margin="0,0,10,0" />
+                        <Button x:Name="FallbackButton" Content="Remove Roblox now (keep launcher)" Style="{StaticResource DangerButton}" Click="Fallback_Click" />
+                    </WrapPanel>
+                </StackPanel>
+
+                <!-- ───────────── In-process work (fallback) ───────────── -->
+                <StackPanel x:Name="WorkingPanel" Visibility="Collapsed">
+                    <TextBlock Text="Uninstalling…" Style="{StaticResource H1}" Margin="0,0,0,14" />
+                    <ProgressBar x:Name="WorkProgress" Style="{StaticResource ModernProgress}" Maximum="1" Margin="0,0,0,10" />
+                    <TextBlock x:Name="WorkStatus" Style="{StaticResource Muted}" />
+                </StackPanel>
+
+                <!-- ───────────── Result (fallback) ───────────── -->
+                <StackPanel x:Name="ResultPanel" Visibility="Collapsed">
+                    <ContentControl x:Name="ResultHost" />
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,22,0,0">
+                        <Button Content="Open full report" Style="{StaticResource SecondaryButton}" Click="OpenReport_Click" Margin="0,0,10,0" />
+                        <Button Content="Close" Style="{StaticResource PrimaryButton}" Click="CloseResult_Click" />
+                    </StackPanel>
+                </StackPanel>
+            </Grid>
+        </ScrollViewer>
+    </Grid>
+</Window>

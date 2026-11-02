@@ -1,0 +1,35 @@
+# Builds Ashstrap on GitHub's Windows machines, so nothing has to be installed or run locally.
+# Result: an "Ashstrap-win-x64" download on the workflow run's page (Actions tab).
+name: Build
+
+on:
+  push:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 8.0.x
+
+      - name: Run tests
+        run: dotnet run --project tests/Ashstrap.Core.Tests -c Release
+
+      - name: Publish launcher
+        run: dotnet publish src/Ashstrap/Ashstrap.csproj -c Release -r win-x64 -o publish
+
+      - name: Publish cleanup helper
+        run: dotnet publish src/Ashstrap.CleanupHelper/Ashstrap.CleanupHelper.csproj -c Release -r win-x64 -o publish
+
+      - name: Upload
+        uses: actions/upload-artifact@v4
+        with:
+          name: Ashstrap-win-x64
+          path: |
+            publish/*.exe
+            publish/*_cor3.dll
+          if-no-files-found: error
