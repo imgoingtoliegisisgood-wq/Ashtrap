@@ -29,6 +29,11 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <!-- WPF projects don't import System.IO implicitly (it clashes with System.Windows.Shapes.Path). -->
+    <Using Include="System.IO" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\Ashstrap.Core\Ashstrap.Core.csproj" />
   </ItemGroup>
 
