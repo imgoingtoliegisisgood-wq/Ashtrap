@@ -27,7 +27,8 @@
     <RuntimeIdentifier>win-x64</RuntimeIdentifier>
     <SelfContained>true</SelfContained>
     <PublishSingleFile>true</PublishSingleFile>
-    <EnableCompressionInSingleFile>true</EnableCompressionInSingleFile>
+    <!-- Uncompressed: starts faster and uses less CPU on first launch (the download zip is compressed anyway). -->
+    <EnableCompressionInSingleFile>false</EnableCompressionInSingleFile>
     <IncludeNativeLibrariesForSelfExtract>false</IncludeNativeLibrariesForSelfExtract>
     <DebugType>embedded</DebugType>
   </PropertyGroup>
@@ -45,6 +46,7 @@
     <Page Include="..\Shared\Theme.xaml" Link="Shared\Theme.xaml" />
     <Compile Include="..\Shared\ReportView.cs" Link="Shared\ReportView.cs" />
     <Compile Include="..\Shared\RunningRobloxDialog.cs" Link="Shared\RunningRobloxDialog.cs" />
+    <Compile Include="..\Shared\StartupGuard.cs" Link="Shared\StartupGuard.cs" />
   </ItemGroup>
 
 </Project>

@@ -25,8 +25,30 @@ jobs:
       - name: Publish cleanup helper
         run: dotnet publish src/Ashstrap.CleanupHelper/Ashstrap.CleanupHelper.csproj -c Release -r win-x64 -o publish
 
+      # Opens every screen of both apps on a real Windows machine, renders it, and exits.
+      # Read-only: nothing is installed or uninstalled on the build machine.
+      - name: Smoke test launcher UI
+        shell: pwsh
+        timeout-minutes: 3
+        run: |
+          $log = "$env:RUNNER_TEMP\launcher-smoke.log"
+          $p = Start-Process publish\Ashstrap.exe -ArgumentList '--smoke-test', $log -PassThru -Wait
+          if (Test-Path $log) { Get-Content $log }
+          if (Test-Path "$env:TEMP\Ashstrap-crash.log") { Get-Content "$env:TEMP\Ashstrap-crash.log" }
+          if ($p.ExitCode -ne 0) { throw "Launcher smoke test failed (exit $($p.ExitCode))" }
+
+      - name: Smoke test cleanup helper UI
+        shell: pwsh
+        timeout-minutes: 3
+        run: |
+          $log = "$env:RUNNER_TEMP\helper-smoke.log"
+          $p = Start-Process publish\Ashstrap.CleanupHelper.exe -ArgumentList '--smoke-test', $log -PassThru -Wait
+          if (Test-Path $log) { Get-Content $log }
+          if (Test-Path "$env:TEMP\Ashstrap-crash.log") { Get-Content "$env:TEMP\Ashstrap-crash.log" }
+          if ($p.ExitCode -ne 0) { throw "Helper smoke test failed (exit $($p.ExitCode))" }
+
       - name: Upload
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: Ashstrap-win-x64
           path: |

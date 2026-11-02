@@ -25,6 +25,31 @@ public partial class MainWindow : Window
         if (openUninstall) ShowPanel(UninstallPanel);
     }
 
+    /// <summary>Build-time check: visit every screen and render it (read-only; nothing is installed or removed).</summary>
+    public async Task RunSmokeTestAsync()
+    {
+        await RefreshRobloxStatusAsync();
+        await SmokeTest.Render(GeneralPanel, "General");
+        ShowPanel(UninstallPanel);
+        OptEverything.IsChecked = true;
+        ChkCache.IsChecked = true;
+        await SmokeTest.Render(UninstallPanel, "Uninstall (choose)");
+        await PreparePreviewAsync();
+        await SmokeTest.Render(ConfirmPanel, "Uninstall (confirm, with live preview)");
+        BlockedReason.Text = "Sample";
+        ShowPanel(BlockedPanel);
+        await SmokeTest.Render(BlockedPanel, "Helper blocked");
+        ShowPanel(WorkingPanel);
+        await SmokeTest.Render(WorkingPanel, "Working");
+        ResultHost.Content = new ReportView(SmokeTest.SampleReport());
+        ShowPanel(ResultPanel);
+        await SmokeTest.Render(ResultPanel, "Result report");
+        var dlg = new RunningRobloxDialog(new[] { new RunningProcess(1, "RobloxPlayerBeta", null, null) }, this);
+        dlg.Show();
+        await SmokeTest.Render(dlg, "Roblox-running dialog");
+        dlg.Close();
+    }
+
     // ───────────────────────────── navigation ─────────────────────────────
 
     private void ShowPanel(FrameworkElement panel)
@@ -100,7 +125,9 @@ public partial class MainWindow : Window
             RemoveRobloxCache: OptEverything.IsChecked == true && ChkCache.IsChecked == true,
             RemoveStudioUserData: OptEverything.IsChecked == true && ChkStudioData.IsChecked == true);
 
-    private async void Continue_Click(object sender, RoutedEventArgs e)
+    private async void Continue_Click(object sender, RoutedEventArgs e) => await PreparePreviewAsync();
+
+    private async Task PreparePreviewAsync()
     {
         var options = CurrentOptions();
         WillRemoveList.Children.Clear();

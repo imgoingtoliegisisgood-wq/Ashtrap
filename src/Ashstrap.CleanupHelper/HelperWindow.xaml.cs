@@ -21,7 +21,7 @@ public partial class HelperWindow : Window
     private bool _running;
     private string? _reportPath;
 
-    public HelperWindow(string jobPath, bool resume)
+    public HelperWindow(string jobPath, bool resume, bool startImmediately = true)
     {
         InitializeComponent();
         _jobPath = jobPath;
@@ -29,7 +29,7 @@ public partial class HelperWindow : Window
         _workDir = Path.GetDirectoryName(Path.GetFullPath(jobPath))!;
         _log = new Logger(Path.Combine(_workDir, "uninstall.log"));
         _log.Logged += (_, msg) => Dispatcher.InvokeAsync(() => AppendLog(msg));
-        Loaded += async (_, _) => await RunAsync();
+        if (startImmediately) Loaded += async (_, _) => await RunAsync();
         Closing += (_, e) =>
         {
             if (_running)
@@ -39,6 +39,23 @@ public partial class HelperWindow : Window
                 RequestCancel();
             }
         };
+    }
+
+    /// <summary>Build-time check: render every helper screen without uninstalling anything.</summary>
+    public async Task RunSmokeTestAsync()
+    {
+        ShowPanel(ProgressPanel);
+        ProgressText.Text = "Sample progress";
+        Progress.Value = 0.4;
+        await SmokeTest.Render(ProgressPanel, "Helper progress");
+        ShowPanel(WaitPanel);
+        await SmokeTest.Render(WaitPanel, "Helper waiting for launcher");
+        ResultHost.Content = new ReportView(SmokeTest.SampleReport());
+        ShowPanel(ResultPanel);
+        await SmokeTest.Render(ResultPanel, "Helper result report");
+        ErrorText.Text = "Sample";
+        ShowPanel(ErrorPanel);
+        await SmokeTest.Render(ErrorPanel, "Helper error");
     }
 
     private void ShowPanel(FrameworkElement panel)
